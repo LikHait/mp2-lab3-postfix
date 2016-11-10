@@ -2,7 +2,7 @@
 #define __STACK_H__
 
 const int START_SIZE = 50;
-const int MAX_SIZE = 100000;
+const int MAX_SIZE = 102400;
 
 template <class T>
 class TStack
@@ -12,12 +12,12 @@ class TStack
     int top;
 
     void AddSize();      //увеличение размера стека
-    bool IsEmpty();      //проверка на пустоту
-    bool IsFull();       //проверка на заполненность
 public:
     TStack();
     TStack(int s);
     ~TStack;
+    bool IsEmpty();      //проверка на пустоту
+    bool IsFull();       //проверка на заполненность
     void PutIn(T val);   //добавление элемента в стек
     T PutOut();          //извлечение элемента из стека
 };
@@ -35,6 +35,8 @@ TStack<T>::TStack()
 template <class T>
 TStack<T>::TStack(int s)
 {
+    if (s < 1 || s > MAX_SIZE)
+        throw('Invalid size of the vector');
     pMem = net T[s];
     if (pMem == nullptr)
         throw('Memory allocation error');
@@ -51,6 +53,8 @@ TStack<T>::~TStack()
 template <class T>
 void TStack<T>::AddSize()
 {
+    if (Size * 2 > MAX_SIZE)
+        throw('Exceeding maximum size of the vector');
     T tmp = new T[Size * 2];
     if (tmp == nullptr)
         throw('Memory allocation error');
