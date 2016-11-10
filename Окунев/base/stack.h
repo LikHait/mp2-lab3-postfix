@@ -53,16 +53,23 @@ TStack<T>::~TStack()
 template <class T>
 void TStack<T>::AddSize()
 {
-    if (Size * 2 > MAX_SIZE)
-        throw('Exceeding maximum size of the vector');
-    T tmp = new T[Size * 2];
+    int tmpSize = 0;
+    if (Size * 2 > MAX_SIZE){
+        if (Size < MAX_SIZE)
+            tmpSize = MAX_SIZE;
+        else
+            throw('Exceeding maximum size of the vector');
+    }
+    else 
+        tmpSize = Size * 2;
+    T tmp = new T[tmpSize];
     if (tmp == nullptr)
         throw('Memory allocation error');
     for (int i = 0; i < Size; i++)
         tmp[i] = pMem[i];
     delete[] pMem;
     pMem = tmp;
-    Size = Size * 2;
+    Size = tmpSize;
 }
 
 template <class T> //пустота
