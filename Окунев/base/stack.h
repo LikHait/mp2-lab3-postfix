@@ -25,7 +25,7 @@ public:
 template <class T>
 TStack<T>::TStack()
 {
-    pMem = net T[START_SIZE];
+    pMem = new T[START_SIZE];
     if (pMem == nullptr)
         throw('Memory allocation error');
     Size = START_SIZE;
@@ -36,8 +36,8 @@ template <class T>
 TStack<T>::TStack(int s)
 {
     if (s < 1 || s > MAX_SIZE)
-        throw('Invalid size of the vector');
-    pMem = net T[s];
+        throw('Invalid size of the stack');
+    pMem = new T[s];
     if (pMem == nullptr)
         throw('Memory allocation error');
     Size = s;
@@ -58,7 +58,7 @@ void TStack<T>::AddSize()
         if (Size < MAX_SIZE)
             tmpSize = MAX_SIZE;
         else
-            throw('Exceeding maximum size of the vector');
+            throw('Exceeding maximum size of the stack');
     }
     else 
         tmpSize = Size * 2;
