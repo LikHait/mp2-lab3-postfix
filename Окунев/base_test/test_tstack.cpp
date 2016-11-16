@@ -76,5 +76,17 @@ TEST(TStack, stack_can_add_lenght)
   s.PutIn(1);
   s.PutIn(1);
   s.PutIn(5);
+  EXPECT_EQ(0, s.IsFull());
+}
+
+TEST(TStack, stack_can_add_lenght_2)
+{
+  TStack<int> s(5);
+  s.PutIn(1);
+  s.PutIn(1);
+  s.PutIn(1);
+  s.PutIn(1);
+  s.PutIn(1);
+  s.PutIn(5);
   EXPECT_EQ(5, s.PutOut());
 }
