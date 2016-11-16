@@ -15,7 +15,7 @@ class TStack
 public:
     TStack();
     TStack(int s);
-    ~TStack;
+    ~TStack();
     bool IsEmpty();      //проверка на пустоту
     bool IsFull();       //проверка на заполненность
     void PutIn(T val);   //добавление элемента в стек
@@ -27,7 +27,7 @@ TStack<T>::TStack()
 {
     pMem = new T[START_SIZE];
     if (pMem == nullptr)
-        throw('Memory allocation error');
+        throw("Memory allocation error");
     Size = START_SIZE;
     top = -1;
 }
@@ -36,10 +36,10 @@ template <class T>
 TStack<T>::TStack(int s)
 {
     if (s < 1 || s > MAX_SIZE)
-        throw('Invalid size of the stack');
+        throw("Invalid size of the stack");
     pMem = new T[s];
     if (pMem == nullptr)
-        throw('Memory allocation error');
+        throw("Memory allocation error");
     Size = s;
     top = -1;
 }
@@ -58,13 +58,13 @@ void TStack<T>::AddSize()
         if (Size < MAX_SIZE)
             tmpSize = MAX_SIZE;
         else
-            throw('Exceeding maximum size of the stack');
+            throw("Exceeding maximum size of the stack");
     }
     else 
         tmpSize = Size * 2;
-    T tmp = new T[tmpSize];
+    T* tmp = new T[tmpSize];
     if (tmp == nullptr)
-        throw('Memory allocation error');
+        throw("Memory allocation error");
     for (int i = 0; i < Size; i++)
         tmp[i] = pMem[i];
     delete[] pMem;
@@ -81,7 +81,7 @@ bool TStack<T>::IsEmpty()
 template <class T> //заполненность
 bool TStack<T>::IsFull()
 {
-    return top == Sise - 1;
+    return top == Size - 1;
 }
 
 template <class T> //добавление
@@ -96,7 +96,7 @@ template <class T> //извлечение
 T TStack<T>::PutOut()
 {
     if (IsEmpty() )
-        throw('Extraction error. The stack is empty');
+        throw("Extraction error. The stack is empty");
     return pMem[top--];
 }
 
