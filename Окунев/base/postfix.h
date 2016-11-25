@@ -10,9 +10,9 @@ class TPostfix
 {
   string infix;
   string postfix;
-  bool IsCorrect(string &str) { return 1; };
+  bool IsCorrect(string &str);  //проверка на корректность введённой строки
   void ToPostfix();
-  int TheTable(const string &str, int IsNeed);
+  int TheTable(const string &str, int IsNeed); //таблица операций, их приоритетов, количество операндов
 public:
   TPostfix(string &str);
   string GetInfix() { return infix; }
