@@ -6,6 +6,11 @@ const int PROH_ALL = 25; //всего проверок
 
 bool IsCorrect(string &str) 
 {
+    if (!(str[0] == 40 || str[0] == 41 || 65 <= str[0] <= 90 || 97 <= str[0] <= 122)) // '(' ')' 'A'-'Z' 'a'-'z' 
+        return 0;
+    int a = str.length - 1;
+    if (!(str[a] == 40 || str[a] == 41 || 65 <= str[a] <= 90 || 97 <= str[a] <= 122))
+        return 0;
     int left = 0;
     int right = 0;
     for (int i; i < str.length; i++)
