@@ -20,6 +20,7 @@ public:
     bool IsFull();       //проверка на заполненность
     void PutIn(T val);   //добавление элемента в стек
     T PutOut();          //извлечение элемента из стека
+    T GetValue();        //получить значение последнего в стеке элемента без извлечения
 };
 
 template <class T>
@@ -98,6 +99,12 @@ T TStack<T>::PutOut()
     if (IsEmpty() )
         throw("Extraction error. The stack is empty");
     return pMem[top--];
+}
+
+template <class T> //получение значения
+T TStack<T>::GetValue()
+{
+    return pMem[top];
 }
 
 #endif

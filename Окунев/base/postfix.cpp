@@ -4,7 +4,7 @@
 const int OPER_IN_ALL = 6; //всего операций
 const int PROH_ALL = 25; //всего проверок
 
-bool IsCorrect(string &str) 
+bool TPostfix::IsCorrect(string &str) 
 {
     if (!(str[0] == 40 || str[0] == 41 || 65 <= str[0] <= 90 || 97 <= str[0] <= 122)) // '(' ')' 'A'-'Z' 'a'-'z' 
         return 0;
@@ -22,39 +22,39 @@ bool IsCorrect(string &str)
     }
     if (left != right)
         return 0;
-    string proh[2][PROH_ALL];
-    proh[0][0] = "(+";
-    proh[0][1] = "(-";
-    proh[0][2] = "(*";
-    proh[0][3] = "(/";
-    proh[0][4] = "()";
-    proh[0][5] = "++";
-    proh[0][6] = "+-";
-    proh[0][7] = "+*";
-    proh[0][8] = "+/";
-    proh[0][9] = "+)";
-    proh[0][10] = "-+";
-    proh[0][11] = "--";
-    proh[0][12] = "-*";
-    proh[0][13] = "-/";
-    proh[0][14] = "-)";
-    proh[0][15] = "*+";
-    proh[0][16] = "*-";
-    proh[0][17] = "**";
-    proh[0][18] = "*/";
-    proh[0][19] = "*)";
-    proh[0][20] = "/+";
-    proh[0][21] = "/-";
-    proh[0][22] = "/*";
-    proh[0][23] = "//";
-    proh[0][24] = "/)";
+    string proh[PROH_ALL];
+    proh[0] = "(+";
+    proh[1] = "(-";
+    proh[2] = "(*";
+    proh[3] = "(/";
+    proh[4] = "()";
+    proh[5] = "++";
+    proh[6] = "+-";
+    proh[7] = "+*";
+    proh[8] = "+/";
+    proh[9] = "+)";
+    proh[10] = "-+";
+    proh[11] = "--";
+    proh[12] = "-*";
+    proh[13] = "-/";
+    proh[14] = "-)";
+    proh[15] = "*+";
+    proh[16] = "*-";
+    proh[17] = "**";
+    proh[18] = "*/";
+    proh[19] = "*)";
+    proh[20] = "/+";
+    proh[21] = "/-";
+    proh[22] = "/*";
+    proh[23] = "//";
+    proh[24] = "/)";
     for (int i = 0; i < PROH_ALL; i++)
-        if (str.find(proh[0][i]) != -1)
+        if (str.find(proh[i]) != -1)
             return 0;
     return 1;
 }
 
-int TheTable(const string &str, int IsNeed) { 
+int TPostfix::TheTable(const string &str, int IsNeed) { 
 	/* Таблица операций
 	IsNeed =	0 - является ли переименной, 1 - приоритет, 2 - количество переменных	*/
 	string TOperations[OPER_IN_ALL]; //операции
@@ -109,8 +109,64 @@ TPostfix::TPostfix(string &str) {
 	ToPostfix();
 }
 
+void TPostfix::ToOpTable(string &str)
+{
+}
+
+void TPostfix::ToStack(TStack<string> &stack, string &str) //стек операций
+{
+    if (str == "(")
+        stack.PutIn(str);
+    if (stack.IsEmpty() == 1)
+    {
+        stack.PutIn(str);
+        return;
+    }
+    string LastOp = stack.GetValue();
+    if (TheTable(str, 1) <= TheTable(LastOp, 1))
+        while (TheTable(str, 1) <= TheTable(LastOp, 1))
+        {
+            postfix = postfix + LastOp + " ";
+            LastOp = stack.GetValue();
+        }
+    else
+    {
+        stack.PutIn(str);
+        return;
+    }
+    if (str == ")")
+    {
+        while (LastOp != "(")
+        {
+            postfix = postfix + LastOp + " ";
+            LastOp = stack.GetValue();
+        }
+    }
+}
+
 void TPostfix::ToPostfix()
 {
+    TStack<string> stack;
+    string str, tmp;
+    for (int i = 0; i < infix.length; i++)
+    {
+        tmp = infix[i];
+        if (TheTable(str, 0) == 1)
+        {
+            ToStack(stack, str);
+            str.clear;
+        }
+        if (TheTable(tmp, 0) == 1)
+        {
+            ToStack(stack, tmp);
+            ToOpTable(str);
+            postfix = postfix + str + " ";
+            str.clear;
+        }
+        else
+            str = str + tmp;
+        tmp.clear;
+    }
 }
 
 double TPostfix::Calculate()
