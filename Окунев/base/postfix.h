@@ -10,14 +10,13 @@ class TPostfix
 {
   string infix;
   string postfix;
+  bool IsCorrect(string &str);  //проверка на корректность введённой строки
+  void ToPostfix();
+  int TheTable(const string &str, int IsNeed); //таблица операций, их приоритетов, количество операндов
 public:
-  TPostfix()
-  {
-    infix = "a + b";
-  }
+  TPostfix(string &str);
   string GetInfix() { return infix; }
   string GetPostfix() { return postfix; }
-  string ToPostfix();
   double Calculate(); // Ввод переменных, вычисление по постфиксной форме
 };
 
