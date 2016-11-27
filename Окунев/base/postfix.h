@@ -21,7 +21,7 @@ class TPostfix
   int TheTable(const string &str, int IsNeed); //таблица операций, их приоритетов, количество операндов
 public:
   TPostfix(){};
-  TPostfix(string &str);
+  TPostfix& operator=(string &str);
   string GetInfix() { return infix; }
   string GetPostfix() { return postfix; }
   double Calculate(); // Ввод переменных, вычисление по постфиксной форме

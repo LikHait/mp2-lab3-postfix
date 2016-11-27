@@ -13,7 +13,7 @@ bool TPostfix::IsCorrect(string &str)
         return 0;
     int left = 0;
     int right = 0;
-    for (int i; i < str.length(); i++)
+    for (int i = 0; i < str.length(); i++)
     {
         if (str[i] == '(')
             left++;
@@ -57,6 +57,9 @@ bool TPostfix::IsCorrect(string &str)
 int TPostfix::TheTable(const string &str, int IsNeed) { 
 	/* Таблица операций
 	IsNeed =	0 - является ли переименной, 1 - приоритет, 2 - количество переменных	*/
+    if (str == "")
+        return 0;
+
 	string TOperations[OPER_IN_ALL]; //операции
 	TOperations[0] = '+';	
 	TOperations[1] = '-';
@@ -73,36 +76,37 @@ int TPostfix::TheTable(const string &str, int IsNeed) {
 	TPriority[4] = 0;
 
 	int TNumberOfOperands[OPER_IN_ALL]; //операнды
-	TPriority[0] = 2;
-	TPriority[1] = 2;
-	TPriority[2] = 2;
-	TPriority[3] = 2;
+    TNumberOfOperands[0] = 2;
+    TNumberOfOperands[1] = 2;
+    TNumberOfOperands[2] = 2;
+    TNumberOfOperands[3] = 2;
 
 	switch ( IsNeed )
 	{
-		case '0':  
+		case 0:  
 			for (int i = 0; i < OPER_IN_ALL; i++)
-				if (str == TOperations[i])
+                if (str.compare(TOperations[i]) == 0)
 					return 1;
 			return 0;
 			break;
-		case '1':
+		case 1:
 			for (int i = 0; i < OPER_IN_ALL; i++)
-				if (str == TOperations[i])
+                if (str.compare(TOperations[i]) == 0)
 					return TPriority[i];
 			return -1;			//не является операцией
 			break;
-		case '2':
+		case 2:
 			for (int i = 0; i < OPER_IN_ALL; i++)
-				if (str == TOperations[i])
+                if (str.compare(TOperations[i]) == 0)
 					return TNumberOfOperands[i];
 			break;
 		default:
 			throw("Invalid second variable in the function TheTable"); //assert???
+            break;
 	}
 }
 
-TPostfix::TPostfix(string &str) {
+TPostfix& TPostfix::operator=(string &str) {
 	if (!IsCorrect(str))
 		throw("String is not correct");
 	infix = str;
@@ -116,8 +120,11 @@ void TPostfix::ToOpTable(string &str)
 
 void TPostfix::ToStack(TStack<string> &stack, string &str) //стек операций
 {
-    if (str == "(")
+    if (str[0] == '(')
+    {
         stack.PutIn(str);
+        return;
+    }
     if (stack.IsEmpty() == 1)
     {
         stack.PutIn(str);
@@ -125,22 +132,36 @@ void TPostfix::ToStack(TStack<string> &stack, string &str) //стек опера
     }
     string LastOp = stack.GetValue();
     if (TheTable(str, 1) <= TheTable(LastOp, 1))
+    {
         while (TheTable(str, 1) <= TheTable(LastOp, 1))
         {
             postfix = postfix + LastOp + " ";
-            LastOp = stack.GetValue();
+            stack.PutOut();
+            if (!stack.IsEmpty())
+                LastOp = stack.GetValue();
+            else
+            {
+                break;
+            }
         }
+        stack.PutIn(str);
+    }
     else
     {
         stack.PutIn(str);
         return;
     }
-    if (str == ")")
+    if (str[0] == ')')
     {
-        while (LastOp != "(")
+        while (LastOp[0] != '(')
         {
             postfix = postfix + LastOp + " ";
             LastOp = stack.GetValue();
+        }
+        if (LastOp[0] == '(')
+        {
+            stack.PutOut();
+            return;
         }
     }
 }
@@ -159,13 +180,13 @@ void TPostfix::ToPostfix()
         }
         if (TheTable(tmp, 0) == 1)
         {
-            ToStack(stack, tmp);
             if (str.length() != 0)
             {
                 ToOpTable(str);
                 postfix = postfix + str + " ";
                 str.clear();
             }
+            ToStack(stack, tmp);
         }
         else
             str = str + tmp;
@@ -181,6 +202,8 @@ void TPostfix::ToPostfix()
             postfix = postfix + str + " ";
         }
     }
+    while (!stack.IsEmpty())
+        postfix = postfix + stack.PutOut() + " ";
 }
 
 double TPostfix::Calculate()

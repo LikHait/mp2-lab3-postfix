@@ -104,6 +104,8 @@ T TStack<T>::PutOut()
 template <class T> //получение значения
 T TStack<T>::GetValue()
 {
+    if (IsEmpty())
+        throw("Extraction error. The stack is empty");
     return pMem[top];
 }
 
