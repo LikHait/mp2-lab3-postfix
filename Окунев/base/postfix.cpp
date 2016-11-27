@@ -8,12 +8,12 @@ bool TPostfix::IsCorrect(string &str)
 {
     if (!(str[0] == 40 || str[0] == 41 || 65 <= str[0] <= 90 || 97 <= str[0] <= 122)) // '(' ')' 'A'-'Z' 'a'-'z' 
         return 0;
-    int a = str.length - 1;
+    int a = (str.length() - 1);
     if (!(str[a] == 40 || str[a] == 41 || 65 <= str[a] <= 90 || 97 <= str[a] <= 122))
         return 0;
     int left = 0;
     int right = 0;
-    for (int i; i < str.length; i++)
+    for (int i; i < str.length(); i++)
     {
         if (str[i] == '(')
             left++;
@@ -111,6 +111,7 @@ TPostfix::TPostfix(string &str) {
 
 void TPostfix::ToOpTable(string &str)
 {
+    OpTable.push_back(str);
 }
 
 void TPostfix::ToStack(TStack<string> &stack, string &str) //стек операций
@@ -148,24 +149,37 @@ void TPostfix::ToPostfix()
 {
     TStack<string> stack;
     string str, tmp;
-    for (int i = 0; i < infix.length; i++)
+    for (int i = 0; i < infix.length(); i++)
     {
         tmp = infix[i];
         if (TheTable(str, 0) == 1)
         {
             ToStack(stack, str);
-            str.clear;
+            str.clear();
         }
         if (TheTable(tmp, 0) == 1)
         {
             ToStack(stack, tmp);
-            ToOpTable(str);
-            postfix = postfix + str + " ";
-            str.clear;
+            if (str.length() != 0)
+            {
+                ToOpTable(str);
+                postfix = postfix + str + " ";
+                str.clear();
+            }
         }
         else
             str = str + tmp;
-        tmp.clear;
+        tmp.clear();
+    }
+    if (str.length() != 0)
+    {
+        if (TheTable(str, 0) == 1)
+            throw("Invalid string");
+        else
+        {
+            ToOpTable(str);
+            postfix = postfix + str + " ";
+        }
     }
 }
 

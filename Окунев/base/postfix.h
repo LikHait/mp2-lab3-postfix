@@ -11,6 +11,7 @@ class TPostfix
 {
   string infix;
   string postfix;
+  vector<string> OpTable;
 
   //служебные методы
   bool IsCorrect(string &str);  //проверка на корректность введённой строки
@@ -19,6 +20,7 @@ class TPostfix
   void ToPostfix();
   int TheTable(const string &str, int IsNeed); //таблица операций, их приоритетов, количество операндов
 public:
+  TPostfix();
   TPostfix(string &str);
   string GetInfix() { return infix; }
   string GetPostfix() { return postfix; }
