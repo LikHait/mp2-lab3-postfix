@@ -20,7 +20,7 @@ class TPostfix
   void ToPostfix();
   int TheTable(const string &str, int IsNeed); //таблица операций, их приоритетов, количество операндов
 public:
-  TPostfix();
+  TPostfix(){};
   TPostfix(string &str);
   string GetInfix() { return infix; }
   string GetPostfix() { return postfix; }
