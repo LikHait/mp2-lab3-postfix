@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include "stack.h"
+#include <math.h>
+#include <iostream>
 
 using namespace std;
 
@@ -11,7 +13,7 @@ class TPostfix
 {
   string infix;
   string postfix;
-  vector<string> OpTable;
+  vector<string> OpTable; //вектор переменных
 
   //служебные методы
   bool IsCorrect(string &str);  //проверка на корректность введённой строки
@@ -20,7 +22,7 @@ class TPostfix
   void ToPostfix();
   int TheTable(const string &str, int IsNeed); //таблица операций, их приоритетов, количество операндов
 public:
-  TPostfix(){};
+  TPostfix() { infix = "String is empty"; };
   TPostfix& operator=(string &str);
   string GetInfix() { return infix; }
   string GetPostfix() { return postfix; }

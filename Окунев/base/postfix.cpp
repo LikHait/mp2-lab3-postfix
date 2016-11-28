@@ -115,6 +115,9 @@ TPostfix& TPostfix::operator=(string &str) {
 
 void TPostfix::ToOpTable(string &str)
 {
+    for (int i = 0; i < OpTable.size(); i++)
+        if (OpTable[i].compare(str) == 0)
+            return;
     OpTable.push_back(str);
 }
 
@@ -135,6 +138,8 @@ void TPostfix::ToStack(TStack<string> &stack, string &str) //стек опера
     {
         while (TheTable(str, 1) <= TheTable(LastOp, 1))
         {
+            if (LastOp[0] == '(')
+                return;
             postfix = postfix + LastOp + " ";
             stack.PutOut();
             if (!stack.IsEmpty())
@@ -150,19 +155,6 @@ void TPostfix::ToStack(TStack<string> &stack, string &str) //стек опера
     {
         stack.PutIn(str);
         return;
-    }
-    if (str[0] == ')')
-    {
-        while (LastOp[0] != '(')
-        {
-            postfix = postfix + LastOp + " ";
-            LastOp = stack.GetValue();
-        }
-        if (LastOp[0] == '(')
-        {
-            stack.PutOut();
-            return;
-        }
     }
 }
 
@@ -203,10 +195,71 @@ void TPostfix::ToPostfix()
         }
     }
     while (!stack.IsEmpty())
+    {
+        if (stack.GetValue()[0] == '(')
+        {
+            stack.PutOut();
+            continue;
+        }
         postfix = postfix + stack.PutOut() + " ";
+    }
 }
 
 double TPostfix::Calculate()
 {
-  return 0;
+    double* OpValue = new double[OpTable.size()];
+    cout << "Введите значения переменных" << endl;
+    for (int i = 0; i < OpTable.size(); i++)
+    {
+        cout << OpTable[i] << " = ";
+        cin >> OpValue[i];
+    }
+    string str;
+    TStack<double> calc;
+    for (int i = 0; i < postfix.length() - 1; i++)
+    {
+        str.clear();
+        while (postfix[i] != ' ')
+            str = str + postfix[i++];
+        if (!TheTable(str, 0))
+        {
+            for (int j = 0; j < OpTable.size(); j++)
+                if (OpTable[j] == str)
+                {
+                    calc.PutIn(OpValue[j]);
+                    break;
+                }
+        }
+        else
+        {
+            if (calc.IsEmpty())
+                throw("String is not correct");
+            if (str == "+")
+            {
+                calc.PutIn(calc.PutOut() + calc.PutOut());
+                continue;
+            }
+            if (str == "-")
+            {
+                double right = calc.PutOut();
+                double left = calc.PutOut();
+                calc.PutIn(left - right);
+                continue;
+            }
+            if (str == "*")
+            {
+                calc.PutIn(calc.PutOut() * calc.PutOut());
+                continue;
+            }
+            if (str == "/")
+            {
+                double right = calc.PutOut();
+                double left = calc.PutOut();
+                calc.PutIn(left / right);
+                continue;
+            }
+        }
+    }
+    delete[] OpValue;
+    return calc.PutOut();
 }
