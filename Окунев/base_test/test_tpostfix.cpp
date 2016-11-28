@@ -3,6 +3,9 @@
 
 TEST(TPostfix, can_create_postfix)
 {
-  ADD_FAILURE();
+    string str = "a+b";
+    TPostfix postfix;
+    postfix = str;
+    ASSERT_NO_THROW();
 }
 
