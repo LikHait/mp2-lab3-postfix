@@ -71,7 +71,7 @@ bool TPostfix::IsNumber(string &str)
 
 int TPostfix::TheTable(const string &str, int IsNeed) { 
 	/* Таблица операций
-	IsNeed =	0 - является ли переименной, 1 - приоритет, 2 - количество переменных	*/
+	IsNeed =	0 - является ли переименной, 1 - приоритет	*/
     if (str == "")
         return 0;
 
@@ -101,12 +101,6 @@ int TPostfix::TheTable(const string &str, int IsNeed) {
     TPriority[9] = 3;
     TPriority[10] = 3;
 
-	int TNumberOfOperands[OPER_IN_ALL]; //операнды
-    TNumberOfOperands[0] = 2;
-    TNumberOfOperands[1] = 2;
-    TNumberOfOperands[2] = 2;
-    TNumberOfOperands[3] = 2;
-
 	switch ( IsNeed )
 	{
 		case 0:  
@@ -120,11 +114,6 @@ int TPostfix::TheTable(const string &str, int IsNeed) {
                 if (str.compare(TOperations[i]) == 0)
 					return TPriority[i];
 			return -1;			//не является операцией
-			break;
-		case 2:
-			for (int i = 0; i < OPER_IN_ALL; i++)
-                if (str.compare(TOperations[i]) == 0)
-					return TNumberOfOperands[i];
 			break;
 		default:
 			throw("Invalid second variable in the function TheTable"); //assert???
