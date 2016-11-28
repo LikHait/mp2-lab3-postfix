@@ -1,7 +1,7 @@
 ﻿#include "postfix.h"
 #include "stack.h"
 
-const int OPER_IN_ALL = 6; //всего операций
+const int OPER_IN_ALL = 11; //всего операций
 const int PROH_ALL = 25; //всего проверок
 
 bool TPostfix::IsCorrect(string &str) 
@@ -54,6 +54,21 @@ bool TPostfix::IsCorrect(string &str)
     return 1;
 }
 
+bool TPostfix::IsNumber(string &str)
+{
+    int dots = 0;
+    for (int i = 0; i < str.length(); i++)
+    {
+        if (str[i] == '.')
+            dots++;
+        if (!(str[i] >= '.' && str[i] <= '9'))
+            return 0;
+    }
+    if (dots > 1)
+        return 0;
+    return 1;
+}
+
 int TPostfix::TheTable(const string &str, int IsNeed) { 
 	/* Таблица операций
 	IsNeed =	0 - является ли переименной, 1 - приоритет, 2 - количество переменных	*/
@@ -67,6 +82,11 @@ int TPostfix::TheTable(const string &str, int IsNeed) {
 	TOperations[3] = '/';
 	TOperations[4] = '(';
 	TOperations[5] = ')';
+    TOperations[6] = "sin";
+    TOperations[7] = "cos";
+    TOperations[8] = "tg";
+    TOperations[9] = "ctg";
+    TOperations[10] = "sqrt";
 
 	int TPriority[OPER_IN_ALL];		//приоритет
 	TPriority[0] = 1;
@@ -74,6 +94,12 @@ int TPostfix::TheTable(const string &str, int IsNeed) {
 	TPriority[2] = 2;
 	TPriority[3] = 2;
 	TPriority[4] = 0;
+    TPriority[5] = -1;
+    TPriority[6] = 3;
+    TPriority[7] = 3;
+    TPriority[8] = 3;
+    TPriority[9] = 3;
+    TPriority[10] = 3;
 
 	int TNumberOfOperands[OPER_IN_ALL]; //операнды
     TNumberOfOperands[0] = 2;
@@ -208,12 +234,23 @@ void TPostfix::ToPostfix()
 double TPostfix::Calculate()
 {
     double* OpValue = new double[OpTable.size()];
-    cout << "Введите значения переменных" << endl;
+    cout << "Значения переменных" << endl;
+    setlocale(LC_ALL, "C");
     for (int i = 0; i < OpTable.size(); i++)
     {
-        cout << OpTable[i] << " = ";
-        cin >> OpValue[i];
+        if (IsNumber(OpTable[i]))
+        {
+            cout << OpTable[i] << " = ";
+            cout << stod(OpTable[i]) << endl;
+            OpValue[i] = stod(OpTable[i]);
+        }
+        else
+        {
+            cout << OpTable[i] << " = ";
+            cin >> OpValue[i];
+        }
     }
+    setlocale(LC_ALL, "Russian");
     string str;
     TStack<double> calc;
     for (int i = 0; i < postfix.length() - 1; i++)
@@ -258,8 +295,36 @@ double TPostfix::Calculate()
                 calc.PutIn(left / right);
                 continue;
             }
+            if (str == "sin")
+            {
+                calc.PutIn(sin(calc.PutOut()));
+                continue;
+            }
+            if (str == "cos")
+            {
+                calc.PutIn(cos(calc.PutOut()));
+                continue;
+            }
+            if (str == "tg")
+            {
+                calc.PutIn(sin(calc.GetValue()) / cos(calc.PutOut()));
+                continue;
+            }
+            if (str == "ctg")
+            {
+                calc.PutIn(cos(calc.GetValue()) / sin(calc.PutOut()));
+                continue;
+            }
+            if (str == "sqrt")
+            {
+                calc.PutIn(sqrt(calc.PutOut()));
+                continue;
+            }
         }
     }
     delete[] OpValue;
-    return calc.PutOut();
+    double res = calc.PutOut();
+    if (!calc.IsEmpty())
+        throw("String is not correct");
+    return res;
 }
