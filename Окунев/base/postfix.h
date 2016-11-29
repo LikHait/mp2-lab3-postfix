@@ -16,6 +16,7 @@ class TPostfix
   vector<string> OpTable; //вектор переменных
 
   //служебные методы
+  bool IsNumber(string &str);   //является ли операнд числом
   bool IsCorrect(string &str);  //проверка на корректность введённой строки
   void ToOpTable(string &str);
   void ToStack(TStack<string> &stack, string &str); //работа со стеком операций
