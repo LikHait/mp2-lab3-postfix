@@ -149,6 +149,17 @@ void TPostfix::ToStack(TStack<string> &stack, string &str) //стек опера
         return;
     }
     string LastOp = stack.GetValue();
+    if (str[0] == ')')
+    {
+        while (LastOp[0] != '(')
+        {
+            stack.PutOut();
+            postfix = postfix + LastOp + " ";
+            LastOp = stack.GetValue();
+        }
+        stack.PutOut();
+        return;
+    }
     if (TheTable(str, 1) <= TheTable(LastOp, 1))
     {
         while (TheTable(str, 1) <= TheTable(LastOp, 1))
